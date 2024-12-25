@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.simplecoding.simpledms.mapper.comments.CommentsMapper">
+
+
+
+    <select id="selectCommentsList"
+            parameterType="Criteria"
+            resultType="Comments">
+        SELECT *
+        FROM COMMEN
+        WHERE COMMENT_LOC LIKE '%' || #{searchKeyword} || '%'
+        ORDER BY COM_ID DESC
+        /*순차배열 추가*/
+        OFFSET #{pageIndex} * #{recordCountPerPage} ROWS FETCH NEXT #{recordCountPerPage} ROWS ONLY
+    </select>
+
+
+    <select id="selectCommentsListTotCnt"
+            parameterType="Criteria"
+            resultType="int">
+        SELECT COUNT(*) FROM COMMEN
+        WHERE COMMENT_LOC LIKE '%'|| #{searchKeyword} || '%'
+    </select>
+
+
+
+    <insert id="insert"
+            parameterType="Comments">
+        INSERT INTO COMMEN(COM_ID,
+                            COMMENT_TEXT,
+                            EMAIL, CREATED_AT, COMMENT_LOC, RATING)
+        VALUES (COMMEN_SEQ.NEXTVAL,
+                #{commentText},
+                #{email}, SYSTIMESTAMP, #{commentLoc},#{rating})
+    </insert>
+
+
+    <select id="selectComments"
+            parameterType="int"
+            resultType="Comments">
+        SELECT * FROM COMMEN
+        WHERE COM_ID = #{comId}
+    </select>
+
+
+    <update id="update"
+            parameterType="Comments">
+        UPDATE COMMEN
+        SET
+            COMMENT_TEXT=#{commentText},
+            COMMENT_LOC = #{commentLoc},
+            RATING = #{rating}
+
+
+        WHERE COM_ID = #{comId}
+    </update>
+
+
+    <delete id="delete"
+            parameterType="int">
+        DELETE COMMEN WHERE COM_ID = #{comId}
+    </delete>
+
+
+</mapper>

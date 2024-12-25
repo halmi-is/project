@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.simplecoding.simpledms.mapper.mypage.MypageMapper">
+
+
+    <select id="selectMypageList"
+            parameterType="Criteria"
+            resultType="Mypage">
+        SELECT e.*, m.*
+        FROM MYPAGE m
+                 RIGHT JOIN MEMBER e
+                            ON m.EMAIL = e.EMAIL
+        WHERE (m.EMAIL LIKE '%' || #{searchKeyword} || '%'
+            OR m.ROOM_ID LIKE '%' || #{searchKeyword} || '%'
+            OR m.REVIEW_ID LIKE '%' || #{searchKeyword} || '%'
+            OR e.EMAIL LIKE '%' || #{searchKeyword} || '%')
+        OFFSET #{pageIndex} * #{recordCountPerPage} ROWS
+            FETCH NEXT #{recordCountPerPage} ROWS ONLY
+    </select>
+
+
+    <select id="selectMypageListTotCnt"
+            parameterType="Criteria"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM MYPAGE m
+                 RIGHT JOIN MEMBER e
+                            ON m.EMAIL = e.EMAIL
+        WHERE (m.EMAIL LIKE '%' || #{searchKeyword} || '%'
+            OR m.ROOM_ID LIKE '%' || #{searchKeyword} || '%'
+            OR m.REVIEW_ID LIKE '%' || #{searchKeyword} || '%'
+            OR e.EMAIL LIKE '%' || #{searchKeyword} || '%')
+    </select>
+
+</mapper>

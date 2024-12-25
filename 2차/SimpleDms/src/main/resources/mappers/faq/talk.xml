@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplecoding.simpledms.mapper.faq.TalkMapper">
+    <select id="selectTalkList" parameterType="Criteria" resultType="Talk">
+        SELECT *
+        FROM TALK
+        WHERE TITLE LIKE '%' || #{searchKeyword} || '%'
+        OFFSET #{pageIndex} * #{recordCountPerPage} ROWS FETCH NEXT #{recordCountPerPage} ROWS ONLY
+    </select>
+    <select id="selectTalkListCount" resultType="int" parameterType="Criteria">
+        SELECT COUNT(*)
+        FROM TALK
+        WHERE TITLE LIKE '%' || #{searchKeyword} || '%'
+    </select>
+    <insert id="insertTalk" parameterType="Talk">
+        INSERT INTO TALK (tno, title, content, category, reply, image, create_date)
+        VALUES (INT_SEQ.NEXTVAL, #{title}, #{content}, #{category}, #{reply}, #{image}, TO_CHAR(SYSDATE, 'YYYY-MM-DD'))
+    </insert>
+    <select id="selectTalk" parameterType="int" resultType="Talk">
+        SELECT *
+        FROM TALK
+        WHERE TNO = #{tno}
+    </select>
+    <update id="updateTalk" parameterType="Talk">
+        UPDATE TALK
+        SET reply= #{reply}
+        WHERE TNO = #{tno}
+    </update>
+    <delete id="deleteTalk" parameterType="int">
+        DELETE
+        FROM TALK
+        WHERE TNO = #{tno}
+    </delete>
+</mapper>

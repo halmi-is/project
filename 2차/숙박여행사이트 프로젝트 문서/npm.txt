@@ -1,0 +1,2 @@
+npm i @portone/browser-sdk
+npm install sweetalert2

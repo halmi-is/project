@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.simplecoding.simpledms.mapper.room.RoomMapper">
+
+    <!-- 특정 숙소의 모든 방 조회: tourId -->
+    <select id="selectRoomsByTourId" parameterType="int" resultType="Room">
+        SELECT *
+        FROM ROOM
+        WHERE TOUR_ID = #{tourId}
+    </select>
+
+    <!-- 방 추가 (roomId 자동 생성 후 roomUrl 업데이트) -->
+    <insert id="addRoom" parameterType="Room">
+        INSERT INTO ROOM (ROOM_ID, TOUR_ID, ROOM_NAME, PRICE, DESCRIPTION, CAPACITY,
+                          ROOM_DATA, ROOM_URL, CHECK_IN, CHECK_OUT)
+        VALUES (ROOM_SEQ.NEXTVAL, #{tourId}, #{roomName}, #{price}, #{description}, #{capacity},
+                #{roomData}, #{roomUrl}, #{checkIn}, #{checkOut})
+    </insert>
+
+    <!-- 방 URL 업데이트 -->
+    <update id="updateRoomUrl" parameterType="Room">
+        UPDATE ROOM
+        SET ROOM_URL = #{roomUrl}
+        WHERE ROOM_ID = #{roomId}
+    </update>
+
+    <!-- 생성된 roomId를 조회하는 쿼리 -->
+    <select id="selectGeneratedRoomId" resultType="int">
+        SELECT ROOM_SEQ.CURRVAL FROM DUAL
+    </select>
+
+    <!-- 방 상세 조회 -->
+    <select id="selectRoom" parameterType="int" resultType="Room">
+        SELECT *
+        FROM ROOM
+        WHERE ROOM_ID = #{roomId}
+    </select>
+
+    <!-- 방 정보 수정 -->
+    <update id="updateRoom" parameterType="Room">
+        UPDATE ROOM
+        SET ROOM_NAME   = #{roomName},
+            PRICE       = #{price},
+            DESCRIPTION = #{description},
+            CAPACITY    = #{capacity},
+            ROOM_DATA   = #{roomData},
+            ROOM_URL    = #{roomUrl},
+            CHECK_IN    = #{checkIn},
+            CHECK_OUT   = #{checkOut}
+        WHERE ROOM_ID = #{roomId}
+    </update>
+
+    <!-- 방 삭제 -->
+    <delete id="deleteRoom" parameterType="int">
+        DELETE FROM ROOM
+        WHERE ROOM_ID = #{roomId}
+    </delete>
+
+    <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- 방 이미지 추가 -->
+    <insert id="addRoomImage" parameterType="Room">
+        INSERT INTO ROOM_IMAGES(IMAGE_ID, ROOM_ID, IMAGE_DATA, IMAGE_URL)
+        VALUES (ROOM_IMAGE_SEQ.NEXTVAL, #{roomId}, #{roomImageData}, #{roomImageUrl})
+    </insert>
+
+    <!-- 생성된 roomImageId를 조회하는 쿼리 -->
+    <select id="selectGeneratedRoomImageId" resultType="int">
+        SELECT ROOM_IMAGE_SEQ.CURRVAL FROM DUAL
+    </select>
+
+    <!-- 방 이미지 URL 업데이트 -->
+    <update id="updateRoomImageUrl" parameterType="Room">
+        UPDATE ROOM_IMAGES
+        SET IMAGE_URL = #{roomImageUrl}
+        WHERE IMAGE_ID = #{roomImageId}
+    </update>
+
+    <!-- roomImageId로 상세조회 시작 -->
+    <resultMap id="roomResultMap" type="Room">
+        <result property="roomImageId" column="IMAGE_ID"/>
+        <result property="roomImageData" column="IMAGE_DATA"/>
+        <result property="roomImageUrl" column="IMAGE_URL"/>
+        <result property="roomImageId" column="IMAGE_ID"/>
+    </resultMap>
+
+    <select id="selectRoomImage" parameterType="int" resultMap="roomResultMap">
+        SELECT *
+        FROM ROOM_IMAGES
+        WHERE IMAGE_ID = #{roomImageId}
+    </select>
+    <!-- roomImageId로 상세조회 끝 -->
+
+    <!-- roomId로 url 조회 -->
+    <select id="getImageByRoomId" parameterType="int" resultType="String">
+        SELECT IMAGE_URL
+        FROM ROOM_IMAGES
+        WHERE ROOM_ID = #{roomId}
+    </select>
+
+</mapper>

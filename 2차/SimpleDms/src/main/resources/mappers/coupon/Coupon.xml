@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.simplecoding.simpledms.mapper.coupon.CouponMapper">
+
+  <!--   쿠폰을 DB에 저장하는 SQL -->
+ <!--   <insert id="insert" parameterType="Coupon">
+        INSERT INTO COUPONS (ID, VALUE, NAME, MEMBER_EMAIL)
+        VALUES (#{id}, #{value}, #{name},#{memberEmail})
+    </insert>
+-->
+      <insert id="insert" parameterType="Coupon">
+       INSERT INTO COUPONS (ID, VALUE, NAME, MEMBER_EMAIL)
+       VALUES (COUPONS_SEQ.NEXTVAL, #{value}, '신규 회원 20%할인',#{memberEmail})
+   </insert>
+
+
+
+    <select id="selectCouponList" parameterType="Criteria" resultType="Coupon">
+
+      SELECT * FROM COUPONS
+      WHERE NAME LIKE '%신규 회원 20%할인%'
+
+      OFFSET #{pageIndex} * #{recordCountPerPage} ROWS
+          FETCH NEXT #{recordCountPerPage} ROWS ONLY
+
+
+    </select>
+
+
+    <select id="selectCouponListTotCnt"
+            parameterType="Criteria"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM COUPONS
+        WHERE NAME LIKE '%신규 회원 20%할인%'
+
+    </select>
+
+
+    <select id="selectCouponsByEmail" parameterType="String" resultType="com.simplecoding.simpledms.vo.coupon.Coupon">
+        SELECT *
+        FROM COUPONS
+        WHERE member_email = #{email}
+    </select>
+
+    <select id="couponByEmail" parameterType="String" resultType="com.simplecoding.simpledms.vo.coupon.Coupon">
+        SELECT *
+        FROM COUPONS
+        WHERE MEMBER_EMAIL = #{memberEmail}
+    </select>
+
+
+
+
+
+
+
+</mapper>
+
+
+
+
+
+

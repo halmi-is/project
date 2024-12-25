@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.simplecoding.simpledms.mapper.cart.CartMapper">
+
+    <!-- 장바구니에 추가 -->
+    <insert id="addToCart" parameterType="Cart">
+        INSERT INTO CART (CART_ID, EMAIL, STAY_DURATION, TOUR_FILE_URL, TOUR_NAME, ROOM_NAME, CAPACITY,
+                          CHECK_IN_DATE, CHECK_OUT_DATE, CHECK_IN_TIME, CHECK_OUT_TIME, TOTAL_PRICE)
+        VALUES (CART_SEQ.NEXTVAL, #{userEmail}, #{stayDuration}, #{tourFileUrl}, #{tourName}, #{roomName},
+                #{capacity}, #{checkInDate}, #{checkOutDate}, #{checkInTime}, #{checkOutTime}, #{totalPrice})
+    </insert>
+
+    <!-- 이메일로 상세조회해서 장바구니 출력: 배열 -->
+    <select id="getItemsFromEmail" parameterType="String" resultType="Cart">
+        SELECT *
+        FROM CART
+        WHERE EMAIL = #{userEmail}
+    </select>
+
+    <!-- 장바구니에 이미 있는지 조회 (추후 만들 예정) -->
+
+    <!--  장바구니에서 개별 삭제: 장바구니 기본키로 -->
+    <delete id="deleteFromCartId" parameterType="int">
+        DELETE
+        FROM CART
+        WHERE CART_ID = #{cartId}
+    </delete>
+
+    <!--  장바구니에서 전체 삭제: 이메일로 -->
+    <delete id="deleteFromEmail" parameterType="String">
+        DELETE
+        FROM CART
+        WHERE EMAIL = #{userEmail}
+    </delete>
+
+    <!-- 장바구니에 담긴 개수 세기 -->
+    <select id="countCartItems" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM CART
+        WHERE EMAIL = #{userEmail}
+    </select>
+
+    <!-- cartId 상세조회해서 장바구니 출력: 객체1개 -->
+    <select id="getCartFromCartId" parameterType="int" resultType="Cart">
+        SELECT *
+        FROM CART
+        WHERE CART_ID = #{cartId}
+    </select>
+
+</mapper>

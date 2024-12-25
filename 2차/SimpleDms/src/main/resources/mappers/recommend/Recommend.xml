@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.simplecoding.simpledms.mapper.recommend.RecommendMapper">
+
+
+    <select id="selectRecommendList"
+            parameterType="Criteria"
+            resultType="Recommend">
+        SELECT *
+        FROM RECOMMEND
+        WHERE TD_NAME LIKE '%' || #{searchKeyword} || '%'
+           OR DESCRIPTION LIKE '%' || #{searchKeyword} || '%'
+        OFFSET #{pageIndex} * #{recordCountPerPage} ROWS
+            FETCH NEXT #{recordCountPerPage} ROWS ONLY
+    </select>
+
+    <select id="selectRecommendListTotCnt"
+            parameterType="Criteria"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM RECOMMEND
+        WHERE TD_NAME LIKE '%' || #{searchKeyword} || '%'
+           OR DESCRIPTION LIKE '%' || #{searchKeyword} || '%'
+    </select>
+
+
+    <insert id="insert" parameterType="Recommend">
+        INSERT INTO RECOMMEND (
+            TD_ID, TD_NAME, LOC, DESCRIPTION, IMAGE_URL, IMAGE_DATA
+        ) VALUES (
+                     RECOMMEND_SEQ.NEXTVAL,
+                     #{tdName},
+                     #{loc},
+                     #{description},
+                     #{imageUrl},
+                     #{imageData}
+                 )
+    </insert>
+
+
+
+
+    <update id="updatetdIdUrl" parameterType="Recommend">
+        UPDATE RECOMMEND
+        SET IMAGE_URL = #{imageUrl}
+        WHERE TD_ID = #{tdId}
+    </update>
+
+
+    <select id="selectGenerateTdId" resultType="int">
+        SELECT RECOMMEND_SEQ.CURRVAL FROM DUAL
+    </select>
+
+
+
+    <select id="select" parameterType="int" resultType="Recommend">
+        SELECT * FROM RECOMMEND
+        WHERE TD_ID = #{tdId}
+    </select>
+
+
+
+    <update id="update" parameterType="Recommend">
+        UPDATE RECOMMEND
+        SET
+            TD_NAME = #{tdName},
+            LOC = #{loc},
+            DESCRIPTION = #{description},
+            IMAGE_URL = #{imageUrl},
+            IMAGE_DATA = #{imageData}
+        WHERE TD_ID = #{tdId}
+    </update>
+
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM RECOMMEND
+        WHERE TD_ID = #{tdId}
+    </delete>
+
+
+
+
+
+</mapper>
